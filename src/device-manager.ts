@@ -1,20 +1,19 @@
 import BrowserDetect from './browser-detect'
 
-class MediaManager {
-  _devices: MediaDeviceInfo[] = []
+export default class MediaManager {
+  private _devices: MediaDeviceInfo[] = []
 
-  _permissions: {[index: string]: any} = {
+  private _permissions: {[index: string]: PermissionState} = {
     camera: 'denied',
     microphone: 'denied'
   }
 
-  _listeners: Array<(() => void)> = []
+  private _listeners: Array<(() => void)> = []
+  // private _videoPermissionChangedListener: (() => void) | null = null
 
-  _ready = false
+  private _ready = false
 
-  _browserDetect: BrowserDetect = new BrowserDetect(navigator.userAgent, navigator.appVersion)
-
-  _media: MediaStream | undefined = undefined
+  private _browserDetect: BrowserDetect = new BrowserDetect(navigator.userAgent, navigator.appVersion)
 
   constructor () {
     this.loadPermissions()
@@ -36,22 +35,50 @@ class MediaManager {
     callback()
   }
 
-  getBrowser (): string {
-    return this._browserDetect.browser
-  }
+  // onVideoPermissionsChanged (callback: () => void) {
+  //   this._videoPermissionChangedListener = callback
+  // }
 
   async loadPermissions (): Promise<void> {
     if (navigator.permissions) {
-      // for (const slug of ['camera', 'microphone']) {
+      // const mappings = {
+      //   camera: 'Video', 
+      //   microphone: 'Microphone'
+      // }
+
+      // for (const mappingKey in mappings) {
       //   try {
-      //     this._permissions[slug] = (await navigator.permissions.query({ name: slug as PermissionName })).state
+      //     const status = await navigator.permissions.query({ name: mappingKey as PermissionName })
+      //     this._permissions[mappingKey] = status.state
+      //     const _this = this
+      //     status.onchange = function () {
+      //       _this._permissions[mappingKey] = this.state
+      //     }
       //   } catch (err) {
-      //     this._permissions[slug] = 'prompt'
+      //     const val = mappings[mappingKey] as string
+      //     const functionName = `has${val}Access`
+      //     if (!this[functionName]()) {
+      //       this._permissions[mappingKey] = 'prompt'
+      //     }
       //   }
       // }
 
+      // for (const (key, value) of {camera: 'camera', microphone: 'video'}) {
+
+      // }
+
+      const _this = this
+
       try {
-        this._permissions.camera = (await navigator.permissions.query({ name: 'camera' })).state
+        const status = await navigator.permissions.query({ name: 'camera' })
+        this._permissions.camera = status.state
+
+        status.onchange = function () {
+          _this._permissions.camera = this.state
+          // if (_this._videoPermissionChangedListener !== null) {
+          //   _this._videoPermissionChangedListener()
+          // }
+        }
       } catch (err) {
         if (!this.hasVideoAccess()) {
           this._permissions.camera = 'prompt'
@@ -59,7 +86,12 @@ class MediaManager {
       }
 
       try {
-        this._permissions.microphone = (await navigator.permissions.query({ name: 'microphone' })).state
+        const status = await navigator.permissions.query({ name: 'microphone' })
+        this._permissions.microphone = status.state
+        
+        status.onchange = function () {
+          _this._permissions.microphone = this.state
+        }
       } catch (err) {
         if (!this.hasMicrophoneAccess()) {
           this._permissions.microphone = 'prompt'
@@ -97,9 +129,9 @@ class MediaManager {
   async requestPermissions (video = true, audio = true): Promise<void> {
     let loadable = true
 
-    if (this._browserDetect.isFirefox()) {
-      this._permissions.camera = 'promt'
-      this._permissions.microphone = 'promt'
+    if (this._browserDetect.isFirefox) {
+      this._permissions.camera = 'promt' as PermissionState
+      this._permissions.microphone = 'promt' as PermissionState
       return
     }
 
@@ -167,14 +199,14 @@ class MediaManager {
     return this._permissions
   }
 
-  async getVideoSrc (): Promise<MediaStream> {
+  async getVideoSrc (device: MediaDeviceInfo | undefined): Promise<MediaStream> {
     if (this.getVideoInputDevices().length === 0) {
       return await navigator.mediaDevices.getUserMedia({ video: true })
     }
 
     return await navigator.mediaDevices.getUserMedia({
       video: {
-        deviceId: this.getVideoInputDevices()[0].deviceId
+        deviceId: (device ? device : this.getVideoInputDevices()[0]).deviceId
       }
     })
   }
@@ -202,8 +234,4 @@ class MediaManager {
   getAudioOutputDevices (): MediaDeviceInfo[] {
     return this.getDevices().filter(device => device.kind.includes('audiooutput'))
   }
-}
-
-export default (app: any, inject: any) => {
-  inject('mediaManager', new MediaManager())
 }

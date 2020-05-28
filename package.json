@@ -6,9 +6,18 @@
   "types": "index.d.ts",
   "scripts": {
     "watch": "tsc --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "jest"
   },
-  "keywords": ["camera", "video", "microphone", "streaming"],
+  "keywords": [
+    "camera",
+    "video",
+    "microphone",
+    "streaming"
+  ],
   "author": "Mediadesq",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
 }
