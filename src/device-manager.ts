@@ -67,18 +67,18 @@ export default class MediaManager {
 
       // }
 
-      const _this = this
+      // const _this = this
 
       try {
         const status = await navigator.permissions.query({ name: 'camera' })
         this._permissions.camera = status.state
 
-        status.onchange = function () {
-          _this._permissions.camera = this.state
+        // status.onchange = function () {
+        //   _this._permissions.camera = this.state
           // if (_this._videoPermissionChangedListener !== null) {
           //   _this._videoPermissionChangedListener()
           // }
-        }
+        // }
       } catch (err) {
         if (!this.hasVideoAccess()) {
           this._permissions.camera = 'prompt'
@@ -89,9 +89,9 @@ export default class MediaManager {
         const status = await navigator.permissions.query({ name: 'microphone' })
         this._permissions.microphone = status.state
         
-        status.onchange = function () {
-          _this._permissions.microphone = this.state
-        }
+        // status.onchange = function () {
+        //   _this._permissions.microphone = this.state
+        // }
       } catch (err) {
         if (!this.hasMicrophoneAccess()) {
           this._permissions.microphone = 'prompt'

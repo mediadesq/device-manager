@@ -1,7 +1,7 @@
 {
   "name": "device-manager",
   "version": "1.0.0",
-  "description": "Library for video and audio device management in web browsers",
+  "description": "Library for video/audio device management in web browsers",
   "main": "dist/index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -18,6 +18,7 @@
   "author": "Mediadesq",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^26.0.1"
+    "jest": "^26.0.1",
+    "typescript": "^3.9.5"
   }
 }
