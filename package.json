@@ -2,8 +2,8 @@
   "name": "device-manager",
   "version": "1.0.0",
   "description": "Library for video/audio device management in web browsers",
-  "main": "dist/index.js",
-  "types": "index.d.ts",
+  "main": "dist/device-manager.js",
+  "types": "dist/*.d.ts",
   "scripts": {
     "watch": "tsc --watch",
     "build": "tsc",
