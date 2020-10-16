@@ -7,10 +7,6 @@ export default async function createDeviceManager (): Promise<DeviceManager> {
 
   await DeviceManagerImpl.manager.loadPermissions()
 
-  // if (DeviceManagerImpl.manager.hasCameraAccess() || DeviceManagerImpl.manager.hasMicrophoneAccess()) {
-  //   await DeviceManagerImpl.manager.loadDevices()
-  // }
-
   await DeviceManagerImpl.manager.loadDevices()
 
   return DeviceManagerImpl.manager
@@ -38,6 +34,7 @@ export interface DeviceManager {
   getCameraDevices (): MediaDeviceInfo[]
   getAudioInputDevices (): MediaDeviceInfo[]
   getAudioOutputDevices (): MediaDeviceInfo[]
+  supportsUserMediaApi (): boolean
 }
 
 class DeviceManagerImpl implements DeviceManager {
@@ -297,5 +294,9 @@ class DeviceManagerImpl implements DeviceManager {
 
   getAudioOutputDevices (): MediaDeviceInfo[] {
     return this.getDevices().filter(device => device.kind.includes('audiooutput'))
+  }
+
+  supportsUserMediaApi (): boolean {
+    return navigator.mediaDevices !== undefined && navigator.mediaDevices.getUserMedia !== undefined
   }
 }
