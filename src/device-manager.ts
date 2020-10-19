@@ -35,9 +35,10 @@ export interface DeviceManager {
   getAudioInputDevices (): MediaDeviceInfo[]
   getAudioOutputDevices (): MediaDeviceInfo[]
   supportsUserMediaApi (): boolean
+  setVideoSrc(element: HTMLVideoElement, stream: MediaStream): void
 }
 
-class DeviceManagerImpl implements DeviceManager {
+export class DeviceManagerImpl implements DeviceManager {
   private _devices: MediaDeviceInfo[] = []
 
   private _permissions: {[index: string]: PermissionState} = {
@@ -298,5 +299,17 @@ class DeviceManagerImpl implements DeviceManager {
 
   supportsUserMediaApi (): boolean {
     return navigator.mediaDevices !== undefined && navigator.mediaDevices.getUserMedia !== undefined
+  }
+
+  setVideoSrc(element: HTMLVideoElement, stream: MediaStream): void {
+    if ('srcObject' in element) {
+      element.srcObject = stream;
+    } else {
+      // @ts-ignore
+      element.src = window.URL.createObjectURL(stream);
+    }
+    element.onloadedmetadata = (e) => {
+      element.play()
+    }
   }
 }
