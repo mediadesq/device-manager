@@ -38,7 +38,7 @@ export interface DeviceManager {
   setVideoSrc(element: HTMLVideoElement, stream: MediaStream): void
 }
 
-export class DeviceManagerImpl implements DeviceManager {
+class DeviceManagerImpl implements DeviceManager {
   private _devices: MediaDeviceInfo[] = []
 
   private _permissions: {[index: string]: PermissionState} = {
