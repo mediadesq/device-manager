@@ -1,3 +1,5 @@
+import { CameraResolution, cameraResolutions } from './resolutions'
+
 export default async function createDeviceManager (): Promise<DeviceManager> {
   if (DeviceManagerImpl.manager !== undefined) {
     return DeviceManagerImpl.manager
@@ -36,6 +38,7 @@ export interface DeviceManager {
   getAudioOutputDevices (): MediaDeviceInfo[]
   supportsUserMediaApi (): boolean
   setVideoSrc(element: HTMLVideoElement, stream: MediaStream): void
+  scanCameraResolutions(device: MediaDeviceInfo): Promise<CameraResolution[]>
 }
 
 class DeviceManagerImpl implements DeviceManager {
@@ -311,5 +314,29 @@ class DeviceManagerImpl implements DeviceManager {
     element.onloadedmetadata = (e) => {
       element.play()
     }
+  }
+
+  async scanCameraResolutions(device: MediaDeviceInfo): Promise<CameraResolution[]> {
+    const allowedResolutions: CameraResolution[] = []
+
+    for (const res of cameraResolutions) {
+      try {
+        const stream = await this.requestCameraStreamWithConstraints({
+          audio: false,
+          video: {
+            deviceId: device.deviceId,
+            width: res.width,
+            height: res.height
+          }
+        })
+
+        stream.getTracks().forEach(t => t.stop())
+
+        allowedResolutions.push(res)
+      } catch {
+      }
+    }
+
+    return allowedResolutions
   }
 }
