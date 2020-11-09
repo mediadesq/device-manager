@@ -1,6 +1,6 @@
 {
   "name": "media-device-manager",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Library for video/audio device management in web browsers",
   "main": "dist/device-manager.js",
   "types": "dist/device-manager.d.ts",
