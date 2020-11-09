@@ -18,7 +18,7 @@ export interface DeviceManager {
   requestCameraStream(device?: MediaDeviceInfo): Promise<MediaStream>
   requestCameraStreamWithConstraints(constraints: MediaStreamConstraints): Promise<MediaStream>
   getDefaultCameraDevice(): Promise<MediaDeviceInfo | undefined>
-  stopCameraStreams(): void
+  // stopCameraStreams(): void
   requestMicrophonePermissions(): Promise<boolean>
   requestMicrophoneStream (device?: MediaDeviceInfo): Promise<MediaStream>
   requestMicrophoneStreamWithConstraints (constraints: MediaStreamConstraints): Promise<MediaStream>
@@ -47,7 +47,7 @@ class DeviceManagerImpl implements DeviceManager {
     microphone: 'denied'
   }
 
-  private cameraStreams: Array<MediaStream> = []
+  // private cameraStreams: Array<MediaStream> = []
   private microphoneStreams: Array<MediaStream> = []
   private displayStreams: Array<MediaStream> = []
 
@@ -84,7 +84,7 @@ class DeviceManagerImpl implements DeviceManager {
       })
     }
 
-    this.cameraStreams.push(stream)
+    // this.cameraStreams.push(stream)
 
     this._permissions.camera = 'granted'
 
@@ -99,7 +99,7 @@ class DeviceManagerImpl implements DeviceManager {
     const accessWasNotGranted = this._permissions.camera !== 'granted'
     const stream = await navigator.mediaDevices.getUserMedia(constraints)
 
-    this.cameraStreams.push(stream)
+    // this.cameraStreams.push(stream)
 
     this._permissions.camera = 'granted'
 
@@ -126,9 +126,9 @@ class DeviceManagerImpl implements DeviceManager {
   //   this.cameraStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
   // }
 
-  stopCameraStreams () {
-    this.cameraStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
-  }
+  // stopCameraStreams () {
+  //   this.cameraStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
+  // }
 
   async requestMicrophonePermissions (): Promise<boolean> {
     try {
