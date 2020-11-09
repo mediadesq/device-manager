@@ -23,10 +23,10 @@ export interface DeviceManager {
   requestMicrophoneStream (device?: MediaDeviceInfo): Promise<MediaStream>
   requestMicrophoneStreamWithConstraints (constraints: MediaStreamConstraints): Promise<MediaStream>
   getDefaultMicrophoneDevice(): Promise<MediaDeviceInfo | undefined>
-  stopMicrophoneStreams(): void
+  // stopMicrophoneStreams(): void
   requestDisplayStream (audio?: boolean): Promise<MediaStream>
   requestDisplayStreamWithConstraints (constraints: MediaStreamConstraints): Promise<MediaStream>
-  stopDisplayStreams(): void
+  // stopDisplayStreams(): void
   hasCameraAccess (): boolean
   hasMicrophoneAccess (): boolean
   getDevices (): MediaDeviceInfo[]
@@ -48,8 +48,8 @@ class DeviceManagerImpl implements DeviceManager {
   }
 
   // private cameraStreams: Array<MediaStream> = []
-  private microphoneStreams: Array<MediaStream> = []
-  private displayStreams: Array<MediaStream> = []
+  // private microphoneStreams: Array<MediaStream> = []
+  // private displayStreams: Array<MediaStream> = []
 
   static manager?: DeviceManagerImpl
 
@@ -161,7 +161,7 @@ class DeviceManagerImpl implements DeviceManager {
       })
     }
 
-    this.microphoneStreams.push(stream)
+    // this.microphoneStreams.push(stream)
 
     this._permissions.microphone = 'granted'
 
@@ -176,7 +176,7 @@ class DeviceManagerImpl implements DeviceManager {
     const accessWasNotGranted = this._permissions.camera !== 'granted'
     const stream = await navigator.mediaDevices.getUserMedia(constraints)
 
-    this.microphoneStreams.push(stream)
+    // this.microphoneStreams.push(stream)
 
     this._permissions.microphone = 'granted'
 
@@ -198,39 +198,35 @@ class DeviceManagerImpl implements DeviceManager {
       return await this.getDefaultMicrophoneDevice()
     }
   }
-
-  stopMicrophoneStreams () {
-    this.microphoneStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
-  }
+  //
+  // stopMicrophoneStreams () {
+  //   this.microphoneStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
+  // }
 
   async requestDisplayStream (audio: boolean = false): Promise<MediaStream> {
     const mediaDevices = navigator.mediaDevices as any
 
-    const stream = await mediaDevices.getDisplayMedia({
+    // this.displayStreams.push(stream)
+
+    return await mediaDevices.getDisplayMedia({
       video: {
         cursor: 'always'
       },
       audio
     })
-
-    this.displayStreams.push(stream)
-
-    return stream
   }
 
   async requestDisplayStreamWithConstraints (constrains: MediaStreamConstraints): Promise<MediaStream> {
     const mediaDevices = navigator.mediaDevices as any
 
-    const stream = await mediaDevices.getDisplayMedia(constrains)
+    // this.displayStreams.push(stream)
 
-    this.displayStreams.push(stream)
-
-    return stream
+    return await mediaDevices.getDisplayMedia(constrains)
   }
 
-  stopDisplayStreams () {
-    this.displayStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
-  }
+  // stopDisplayStreams () {
+  //   this.displayStreams.forEach(stream => stream.getTracks().forEach(track => track.stop()))
+  // }
 
   private async requestUserMedia (constraints: MediaStreamConstraints, device?: MediaDeviceInfo) : Promise<MediaStream> {
     let stream
